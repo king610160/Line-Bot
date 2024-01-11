@@ -60,7 +60,7 @@ async function handleEvent(event) {
         messages: messages,
         max_tokens: 200,
     })
-    console.log(completion.choices[0].message.content)
+    
     // create an echoing text message
     const echo = { type: 'text', text: completion.choices[0].message.content || '抱歉，我沒有話可說了。' }
   
