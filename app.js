@@ -41,7 +41,7 @@ async function handleEvent(event) {
     return Promise.resolve(null)
   }
   // event.message.text need to be json
-  console.lof(event.message.text)
+  console.log(event.message.text)
 
   const completion = await openai.completions.create({
       model: 'gpt-3.5-turbo',
