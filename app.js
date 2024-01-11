@@ -2,10 +2,10 @@ require('dotenv').config()
 
 const express = require('express')
 const line = require('@line/bot-sdk')
-const { OpenAIApi } = require('openai')
+const { OpenAI } = require('openai')
 
-const openai = new OpenAIApi({
-    apiKey: process.env.OPEN_AI_LINE_SECRET,
+const openai = new OpenAI({
+  apiKey: process.env.OPEN_AI_LINE_SECRET// This is also the default, can be omitted
 })
 
 // create LINE SDK config from env variables
@@ -61,3 +61,4 @@ const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log(`listening on ${port}`)
 })
+
