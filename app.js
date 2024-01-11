@@ -49,7 +49,6 @@ async function handleEvent(event) {
       }],
       max_tokens: 200,
   })
-  console.log(completion.choices[0])
   // create an echoing text message
   const echo = { type: 'text', text: completion.choices[0].message.trim() || '抱歉，我沒有話可說了。' }
 
