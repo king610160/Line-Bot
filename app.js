@@ -36,37 +36,46 @@ app.post('/callback', line.middleware(config), (req, res) => {
 
 // event handler
 async function handleEvent(event) {
-  if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
-    return Promise.resolve(null)
-  }
-  // event.message.text need to be safe json, use stringify to change it to safe json
-  const userInput = event.message.text
-  const jsonSafePrompt = JSON.stringify({ prompt: userInput })
+  try {
+    if (event.type !== 'message' || event.message.type !== 'text') {
+      // ignore non-text-message event
+      return Promise.resolve(null)
+    }
 
-  const completion = await openai.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{
+    const userInput = event.message.text.trim()
+    const messages = [
+      {
         role: 'user',
-        content: jsonSafePrompt,
-      },{
+        content: userInput,
+      },
+      {
         role: 'system',
-        content: 'Your are helpful assistant.',
-      }],
-      max_tokens: 200,
-  })
-  // create an echoing text message
-  const echo = { type: 'text', text: completion.choices[0].message.trim() || '抱歉，我沒有話可說了。' }
+        content: 'You are a helpful assistant.',
+      },
+    ]
 
-  // use reply API
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [echo],
-  })
+    const completion = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        temperature: 1,
+        messages: messages,
+        max_tokens: 200,
+    })
+    console.log(completion.choices[0].message.content)
+    // create an echoing text message
+    const echo = { type: 'text', text: completion.choices[0].message.content || '抱歉，我沒有話可說了。' }
+  
+    // use reply API
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [echo],
+    })
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // listen on port
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 80
 app.listen(port, () => {
   console.log(`listening on ${port}`)
 })
