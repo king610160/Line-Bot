@@ -41,13 +41,16 @@ async function handleEvent(event) {
     return Promise.resolve(null)
   }
   // event.message.text need to be json
-  console.log(event.message.text)
+  console.log(typeof event.message.text)
 
   const completion = await openai.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{
         role: 'user',
         content: event.message.text,
+      },{
+        role: 'system',
+        content: 'Your are helpful assistant.',
       }],
       max_tokens: 200,
   })
