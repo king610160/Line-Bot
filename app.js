@@ -40,14 +40,15 @@ async function handleEvent(event) {
     // ignore non-text-message event
     return Promise.resolve(null)
   }
-  // event.message.text need to be json
-  console.log(typeof event.message.text)
+  // event.message.text need to be safe json, use stringify to change it to safe json
+  const userInput = event.message.text
+  const jsonSafePrompt = JSON.stringify({ prompt: userInput })
 
   const completion = await openai.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{
         role: 'user',
-        content: event.message.text,
+        content: jsonSafePrompt,
       },{
         role: 'system',
         content: 'Your are helpful assistant.',
