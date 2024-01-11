@@ -5,7 +5,7 @@ const line = require('@line/bot-sdk')
 const { OpenAI } = require('openai')
 
 const openai = new OpenAI({
-  apiKey: process.env.OPEN_AI_LINE_SECRET// This is also the default, can be omitted
+  apiKey: process.env.OPEN_AI_LINE_SECRET 
 })
 
 // create LINE SDK config from env variables
@@ -41,13 +41,17 @@ async function handleEvent(event) {
     return Promise.resolve(null)
   }
 
-  const completion = await openai.createCompletion({
-    model: 'text-davinci-003',
-    prompt: event.message.text,
+  const completion = await openai.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{
+        role: 'user',
+        content: event.message.text,
+      }],
+      max_tokens: 200,
   })
-
+  console.log(completion.choices[0])
   // create an echoing text message
-  const echo = { type: 'text', text: completion.data.choices[0].text }
+  const echo = { type: 'text', text: completion.choices[0].message.trim() || '抱歉，我沒有話可說了。' }
 
   // use reply API
   return client.replyMessage({
